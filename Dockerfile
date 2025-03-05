@@ -64,13 +64,15 @@ ARG MODEL_TYPE
 WORKDIR /comfyui
 
 # Create necessary directories
-RUN mkdir -p models/checkpoints models/vae models/loras
+RUN mkdir -p models/checkpoints models/vae models/loras models/text_encoders
 
 # Download checkpoints/vae/LoRA to include in image based on model type
 RUN wget -O models/unet/hunyuan_video_720_cfgdistill_fp8_e4m3fn.safetensors https://huggingface.co/Kijai/HunyuanVideo_comfy/resolve/main/hunyuan_video_720_cfgdistill_fp8_e4m3fn.safetensors && \
     wget -O models/vae/hunyuan_video_vae_bf16.safetensors https://huggingface.co/Kijai/HunyuanVideo_comfy/resolve/main/hunyuan_video_vae_bf16.safetensors && \
-    wget -O models/loras/hyvideo_FastVideo_LoRA-fp8.safetensors https://huggingface.co/Kijai/HunyuanVideo_comfy/resolve/main/hyvideo_FastVideo_LoRA-fp8.safetensors
+    wget -O models/loras/hyvideo_FastVideo_LoRA-fp8.safetensors https://huggingface.co/Kijai/HunyuanVideo_comfy/resolve/main/hyvideo_FastVideo_LoRA-fp8.safetensors && \
+    wget -O models/text_encoders/llava_llama3_fp8_scaled.safetensors https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/llava_llama3_fp8_scaled.safetensors
 
+RUN comfy model download --url https://huggingface.co/zer0int/CLIP-GmP-ViT-L-14/resolve/main/ViT-L-14-TEXT-detail-improved-hiT-GmP-TE-only-HF.safetensors --relative-path models/text_encoders/long_clip --filename ViT-L-14-TEXT-detail-improved-hiT-GmP-TE-only-HF.safetensors
 # Stage 3: Final image
 FROM base as final
 
